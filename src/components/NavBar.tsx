@@ -93,7 +93,7 @@ const NavBar: FC = () => {
                     <div>
                       <Menu.Button className="relative flex items-center justify-center h-10 w-10 rounded-full bg-gray-800 text-white text-sm font-bold focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-900">
                         <span className="sr-only">Open user menu</span>
-                        {getFirstLetter(user?.email || '')}
+                        {getFirstLetter(user?.name || '')}
                       </Menu.Button>
                     </div>
                     <Menu.Items
