@@ -3,9 +3,9 @@ import Image from 'next/image';
 
 const NotFoundPage = () => {
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-gray-900 p-4">
-      <h1 className="text-6xl font-bold text-white mb-4">404</h1>
-      <p className="text-xl text-gray-400 mb-8">Oops! The page you're looking for isn't here.</p>
+    <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100 p-4">
+      <h1 className="text-6xl font-bold text-gray-900 mb-4">404</h1>
+      <p className="text-xl text-gray-600 mb-8">Oops! The page you&apos;re looking for isn&apos;t here.</p>
       <Image 
         src="/404.png"
         alt="404 Image" 

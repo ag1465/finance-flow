@@ -1,22 +1,25 @@
-"use client";
-import { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
-import { RootState } from "@/store/store";
+'use client';
+
+import { useEffect, useState, useCallback } from 'react';
+import { useSelector } from 'react-redux';
+import { RootState } from '@/store/store';
 import {
   getTransactions,
   addTransaction,
   getAccount,
   updateAccountBalance,
-} from "@/firebase/api";
-import withAuth from "@/components/withAuth";
-import AccountSummary from "@/components/AccountSummary";
-import TransactionList from "@/components/TransactionList";
-import AddTransactionModal from "@/components/AddTransactionModal";
-import SpendingCategoryChart from "@/components/SpendingCategoryChart";
-import * as XLSX from "xlsx";
-import { Timestamp } from "firebase/firestore";
-import SetCategoryBudgetModal from "@/components/SetCategoryBudgetModal";
-import { getAllCategoryBudgets } from "@/firebase/api";
+  addBudgetToFirestore,
+  getBudget,
+} from '@/firebase/api';
+import withAuth from '@/components/withAuth';
+import AccountSummary from '@/components/AccountSummary';
+import TransactionList from '@/components/TransactionList';
+import AddTransactionModal from '@/components/AddTransactionModal';
+import SpendingCategoryChart from '@/components/SpendingCategoryChart';
+import * as XLSX from 'xlsx';
+import { Timestamp } from 'firebase/firestore';
+import SetCategoryBudgetModal from '@/components/SetCategoryBudgetModal';
+import { getAllCategoryBudgets, addCategoryBudget } from '@/firebase/api';
 
 interface Account {
   id: string;
@@ -54,19 +57,13 @@ const DashboardPage = () => {
   const [accountId, setAccountId] = useState<string | null>(null);
   const transactionsPerPage = 10;
 
-  useEffect(() => {
-    if (user) {
-      fetchAccountDetails();
-    }
-  }, [user, selectedMonth, currentPage]);
-
-  const fetchAccountDetails = async () => {
+  const fetchAccountDetails = useCallback(async () => {
     if (user) {
       try {
         const account = await getAccount(user.uid) as Account;
         if (account) {
           setBalance(account.balance);
-          setAccountId(account.id); 
+          setAccountId(account.id); // Store accountId in state
           await fetchTransactions(account.id);
         } else {
           console.error('No account found for user:', user.uid);
@@ -75,9 +72,9 @@ const DashboardPage = () => {
         console.error('Error fetching account details:', error);
       }
     }
-  };
-  
-  const fetchTransactions = async (accountId: string) => {
+  }, [user]);
+
+  const fetchTransactions = useCallback(async (accountId: string) => {
     if (user) {
       try {
         const userTransactions = await getTransactions(user.uid, selectedMonth, currentPage, transactionsPerPage);
@@ -86,19 +83,19 @@ const DashboardPage = () => {
         } else {
           setTransactions(userTransactions);
           calculateAmountSpent(userTransactions);
-          fetchCategoryBudgets(user.uid, userTransactions);
+          fetchCategoryBudgets(user.uid, userTransactions); // Pass transactions here
         }
       } catch (error) {
         console.error('Error fetching transactions:', error);
       }
     }
-  };
-  
-  const fetchCategoryBudgets = async (userId: string, transactions: any[]) => {
+  }, [user, selectedMonth, currentPage]);
+
+  const fetchCategoryBudgets = useCallback(async (userId: string, transactions: any[]) => {
     try {
       const budgets = await getAllCategoryBudgets(userId);
       const categoryMap: { [key: string]: number } = {};
-  
+
       // Calculate spent amount from transactions
       transactions.forEach((transaction) => {
         if (transaction.type === "expense") {
@@ -108,26 +105,26 @@ const DashboardPage = () => {
           categoryMap[transaction.category] += transaction.amount;
         }
       });
-  
+
       // Create category data with both budgeted and spent amounts
       const categoryData = budgets.map(budget => ({
         category: budget.category,
         budgetedAmount: budget.amount,
         spentAmount: categoryMap[budget.category] || 0
       }));
-  
+
       setCategoryData(categoryData);
     } catch (error) {
       console.error('Error fetching category budgets:', error);
     }
-  };  
-  
-  const calculateAmountSpent = (transactions: any[]) => {
+  }, []);
+
+  const calculateAmountSpent = useCallback((transactions: any[]) => {
     const totalSpent = transactions
       .filter((transaction) => transaction.type === "expense")
       .reduce((acc, transaction) => acc + transaction.amount, 0);
     setAmountSpent(totalSpent);
-  };
+  }, []);
 
   const handleAddTransaction = async (
     amount: string,
@@ -220,6 +217,12 @@ const DashboardPage = () => {
     setDescription("");
     setError(null);
   };
+
+  useEffect(() => {
+    if (user) {
+      fetchAccountDetails();
+    }
+  }, [user, selectedMonth, currentPage, fetchAccountDetails]);
 
   return (
     <div className="min-h-screen bg-gray-900 py-12">
