@@ -7,7 +7,8 @@ import { useRouter } from 'next/navigation';
 import { RootState } from '@/store/store';
 import { signInWithEmailAndPassword, createUserWithEmailAndPassword } from 'firebase/auth';
 import { auth } from '@/firebase/initFirebase';
-import {addUserToFirestore, addAccountToFirestore, getUserFromFirestore} from '@/firebase/api';
+import { addUserToFirestore, addAccountToFirestore, getUserFromFirestore, addBudgetToFirestore, addCategoryBudget } from '@/firebase/api';
+import { expense_categories } from '@/util/constant';
 
 const LoginPage = () => {
   const [email, setEmail] = useState('');
@@ -18,6 +19,7 @@ const LoginPage = () => {
   const dispatch = useDispatch();
   const router = useRouter();
   const isAuthenticated = useSelector((state: RootState) => state.auth.isAuthenticated);
+
 
   const handleLogin = async (event: React.FormEvent) => {
     event.preventDefault();
@@ -45,7 +47,13 @@ const LoginPage = () => {
       const userCredential = await createUserWithEmailAndPassword(auth, email, password);
       const user = userCredential.user;
       await addUserToFirestore(user.uid, user.email || '', name);
-      await addAccountToFirestore(user.uid, 'Default Account', 'checking', 0);
+      await addAccountToFirestore(user.uid, 'Default Account', 'checking');
+
+      // Create category budgets with 0 amount
+      for (const category of expense_categories) {
+        await addCategoryBudget(user.uid, category, 0);
+      }
+
       dispatch(login({ uid: user.uid, email: user.email || '', name }));
       router.push('/dashboard');
     } catch (error: any) {

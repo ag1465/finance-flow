@@ -101,7 +101,7 @@ const NavBar: FC = () => {
                       className="absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none"
                     >
                       <>
-                        <Menu.Item>
+                        {/* <Menu.Item>
                           {({ active }: { active: boolean }) => (
                             <a
                               href="#"
@@ -113,8 +113,8 @@ const NavBar: FC = () => {
                               Your Profile
                             </a>
                           )}
-                        </Menu.Item>
-                        <Menu.Item>
+                        </Menu.Item> */}
+                        {/* <Menu.Item>
                           {({ active }: { active: boolean }) => (
                             <a
                               href="#"
@@ -126,7 +126,7 @@ const NavBar: FC = () => {
                               Settings
                             </a>
                           )}
-                        </Menu.Item>
+                        </Menu.Item> */}
                         <Menu.Item>
                           {({ active }: { active: boolean }) => (
                             <a

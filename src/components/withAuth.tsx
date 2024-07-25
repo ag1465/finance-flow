@@ -17,7 +17,7 @@ const withAuth = (WrappedComponent: FC) => {
     }, [isAuthenticated, router]);
 
     if (!isAuthenticated) {
-      return null; // Optionally, you can return a loading spinner or a placeholder here
+      return null; 
     }
 
     return <WrappedComponent {...props} />;
