@@ -12,6 +12,7 @@
     "@headlessui/react": "^2.1.2",
     "@heroicons/react": "^2.1.5",
     "@reduxjs/toolkit": "^2.2.6",
+    "@types/d3": "^7.4.3",
     "d3": "^7.9.0",
     "firebase": "^10.12.3",
     "next": "14.2.5",

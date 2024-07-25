@@ -23,7 +23,7 @@ const TeamPage: FC = () => {
             <div key={member.name} className="bg-gray-800 rounded-lg p-6 shadow-lg text-center">
               <img
                 src={member.imageUrl}
-                alt={`${member.name}'s photo`}
+                alt={`${member.name}&apos;s photo`}
                 className="h-40 w-40 rounded-full mx-auto mb-6"
               />
               <h3 className="text-xl font-bold text-white">{member.name}</h3>
@@ -36,7 +36,7 @@ const TeamPage: FC = () => {
                   <FaLinkedin size={24} />
                 </a>
               </div>
-              <p className="text-gray-200 mb-4">"I am a Software Developer with over 4 years of experience in building web applications, particularly using React and Vue.js."</p>
+              <p className="text-gray-200 mb-4">&quot;I am a Software Developer with over 4 years of experience in building web applications, particularly using React and Vue.js.&quot;</p>
             </div>
           ))}
         </div>
