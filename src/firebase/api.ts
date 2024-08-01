@@ -127,7 +127,7 @@ const getTransactions = async (userId: string, month: string, page: number, page
     const startDate = new Date(`${month}-01T00:00:00`);
     // End date is the last day of the month
     const endDate = new Date(startDate.getFullYear(), startDate.getMonth() + 1, 0, 23, 59, 59);
-
+    
     const startTimestamp = Timestamp.fromDate(startDate);
     const endTimestamp = Timestamp.fromDate(endDate);
 

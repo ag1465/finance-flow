@@ -80,6 +80,9 @@ const DashboardPage = () => {
         const userTransactions = await getTransactions(user.uid, selectedMonth, currentPage, transactionsPerPage);
         if (userTransactions.length === 0) {
           console.log('No transactions found');
+          setTransactions(userTransactions)
+          calculateAmountSpent(userTransactions)
+          fetchCategoryBudgets(user.uid, userTransactions)
         } else {
           setTransactions(userTransactions);
           calculateAmountSpent(userTransactions);
@@ -95,7 +98,7 @@ const DashboardPage = () => {
     try {
       const budgets = await getAllCategoryBudgets(userId);
       const categoryMap: { [key: string]: number } = {};
-
+      
       // Calculate spent amount from transactions
       transactions.forEach((transaction) => {
         if (transaction.type === "expense") {
@@ -190,9 +193,6 @@ const DashboardPage = () => {
   const handleMonthChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSelectedMonth(event.target.value);
     setCurrentPage(1);
-    if (accountId) {
-      fetchTransactions(accountId); // Ensure to refetch transactions on month change
-    }
   };
 
   const handleNextPage = () => {
@@ -219,10 +219,16 @@ const DashboardPage = () => {
   };
 
   useEffect(() => {
+    if (user && accountId) {
+      fetchTransactions(accountId);
+    }
+  }, [user, selectedMonth, currentPage, accountId, fetchTransactions]);
+
+  useEffect(() => {
     if (user) {
       fetchAccountDetails();
     }
-  }, [user, selectedMonth, currentPage, fetchAccountDetails]);
+  }, [user, fetchAccountDetails]);
 
   return (
     <div className="min-h-screen bg-gray-900 py-12">
